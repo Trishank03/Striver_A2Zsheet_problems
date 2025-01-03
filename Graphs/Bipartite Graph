@@ -1,0 +1,80 @@
+  *****************************  BFS Approach  **********************************
+
+class Solution {
+    // colors a component 
+    private: 
+    bool check(int start, int V, vector<int>adj[], int color[]) {
+        queue<int> q;
+	    q.push(start); 
+	    color[start] = 0; 
+	    while(!q.empty()) {
+	        int node = q.front();
+	        q.pop(); 
+	        
+	        for(auto it : adj[node]) {
+	            // if the adjacent node is yet not colored
+	            // you will give the opposite color of the node 
+	            if(color[it] == -1) {
+	                
+	                color[it] = !color[node]; 
+	                q.push(it); 
+	            }
+	            // is the adjacent guy having the same color 
+	            // someone did color it on some other path 
+	            else if(color[it] == color[node]) {
+	                return false; 
+	            }
+	        }
+	    }
+	    return true; 
+    }
+public:
+	bool isBipartite(int V, vector<int>adj[]){
+	    int color[V]; 
+	    for(int i = 0;i<V;i++) color[i] = -1; 
+	    
+	    for(int i = 0;i<V;i++) {
+	        // if not coloured
+	        if(color[i] == -1) {
+	            if(check(i, V, adj, color) == false) {
+	                return false; 
+	            }
+	        }
+	    }
+	    return true; 
+	}
+
+};
+
+
+
+
+*****************************  DFS Approach  *******************************
+
+class Solution {
+public:
+
+    bool dfs(int i,vector<int> &vis,vector<vector<int>> &graph,int col){
+        if(vis[i]==-1) vis[i] = col;
+        for(auto it:graph[i]){
+            if(vis[it]==-1){
+            if(dfs(it,vis,graph,!col)==false) return false;
+            }
+            else if(vis[it] == col) return false;
+        }
+        return true;
+    }
+
+    bool isBipartite(vector<vector<int>>& graph) {
+       int n = graph.size();
+       vector<int> vis(n,-1);
+       //for connected components
+       for(int i=0;i<n;i++){
+        if(vis[i]==-1){
+        if(dfs(i,vis,graph,1)==false) return false;
+        }
+       }
+       return true;
+
+    }
+};
