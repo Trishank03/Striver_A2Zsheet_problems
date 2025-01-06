@@ -1,0 +1,69 @@
+************************************  Approach-1 (cycle detection using DFS)  ******************************************
+
+class Solution {
+public:
+
+    bool dfs(int node,vector<vector<int>> &graph,vector<int> &vis,vector<int> &pathVis){
+        vis[node] = 1;
+        pathVis[node] = 1;
+        for(auto it:graph[node]){
+            if(!vis[it]){
+                if(dfs(it,graph,vis,pathVis)==true) return true;
+            }
+            else if(pathVis[it]) return true;
+        }
+        pathVis[node] = 0;
+        return false;
+    }
+
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> pathVis(n,0);
+        vector<int> vis(n,0);
+        // vector<int> check(n,0);
+        for(int i=0;i<n;i++){
+            if(!vis[i]){
+                dfs(i,graph,vis,pathVis);
+            }
+        }
+        vector<int> ans;
+        for(int i=0;i<n;i++){
+            if(pathVis[i]==0) ans.push_back(i);
+        }
+        return ans;
+    }
+};
+
+
+************  Approach - 2(topological sorting using indegree i.e., BFS => Kahn's algorithm) ************
+
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> indeg(n,0);
+        vector<vector<int>> temp(n);
+        for(int i=0;i<n;i++){
+            for(auto it:graph[i]){
+                temp[it].push_back(i);
+                indeg[i]++;
+            }
+        }
+        queue<int> q;
+        for(int i=0;i<n;i++){
+            if(indeg[i]==0) q.push(i);
+        }
+        vector<int> ans;
+        while(!q.empty()){
+            int node  = q.front();
+            q.pop();
+            ans.push_back(node);
+            for(auto it:temp[node]){
+                indeg[it]--;
+                if(indeg[it]==0) q.push(it);
+            }
+        }
+        sort(ans.begin(),ans.end());
+        return ans;
+    }
+};
