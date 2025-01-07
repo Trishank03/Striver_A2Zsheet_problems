@@ -1,0 +1,51 @@
+        // memoization
+
+int solve(int n,vector<int> &arr,vector<int> &dp){
+        if(n == 0) return 0;
+        if(dp[n]!=-1) return dp[n];
+        int jumptwo = INT_MAX;
+        int jumpone = solve(n-1,arr,dp)+abs(arr[n]-arr[n-1]);
+        if(n>1){
+            jumptwo = solve(n-2,arr,dp)+abs(arr[n]-arr[n-2]);
+        }
+        return dp[n] = min(jumpone,jumptwo);
+    }
+
+
+         // Tabulation
+
+int minimumEnergy(vector<int>& height, int n) {
+        vector<int> dp(n+1,-1);
+        dp[0] = 0;
+       for(int i=1;i<n;i++){
+           int jumpone = dp[i-1] + abs(height[i]-height[i-1]);
+           int jumptwo = INT_MAX;
+           if(i>1){
+               jumptwo = dp[i-2] + abs(height[i]-height[i-2]);
+           }
+           dp[i] = min(jumpone,jumptwo);
+       }
+        return dp[n-1];
+    }
+
+
+
+          // Space optimization
+
+int minimumEnergy(vector<int>& height, int n) {
+        // vector<int> dp(n+1,-1);
+        // dp[0] = 0;
+        int lastone = 0;
+        int lastsecond = 0;
+       for(int i=1;i<n;i++){
+           int jumpone = lastone + abs(height[i]-height[i-1]);
+           int jumptwo = INT_MAX;
+           if(i>1){
+               jumptwo = lastsecond + abs(height[i]-height[i-2]);
+           }
+           int curr = min(jumpone,jumptwo);
+           lastsecond = lastone;
+           lastone = curr;
+       }
+        return lastone;
+    }
