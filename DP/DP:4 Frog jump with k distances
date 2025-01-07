@@ -1,0 +1,35 @@
+            // memoization
+ int solve(int idx,vector<int> &arr,int n,int k,vector<int> &dp){
+        if(idx == 0) return 0;
+        if(dp[idx]!=-1) return dp[idx];
+        int mmsteps = INT_MAX;
+        for(int i=1;i<=k;i++){
+            if(idx-i >= 0) {
+            int jump = solve(idx-i,arr,n,k,dp) + abs(arr[idx] - arr[idx-i]);
+            mmsteps = min(mmsteps,jump);
+            }
+        }
+        return dp[idx] = mmsteps;
+    }
+
+
+
+           // tabulation
+
+int solveUtil(int n, vector<int>& height, vector<int>& dp, int k) {
+    dp[0] = 0;
+    // Loop through the array to fill in the dp array
+    for (int i = 1; i < n; i++) {
+        int mmSteps = INT_MAX;
+
+        // Loop to try all possible jumps from '1' to 'k'
+        for (int j = 1; j <= k; j++) {
+            if (i - j >= 0) {
+                int jump = dp[i - j] + abs(height[i] - height[i - j]);
+                mmSteps = min(jump, mmSteps);
+            }
+        }
+        dp[i] = mmSteps;
+    }
+    return dp[n - 1]; // The result is stored in the last element of dp
+}
